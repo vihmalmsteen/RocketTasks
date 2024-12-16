@@ -1,0 +1,21 @@
+Prepare:
+
++--------------------+------------------------+
+| RUN                | COMMAND                |
++--------------------+------------------------+
+| docker-compose.yml | docker-compose up -d   |
+| migration          | npx prisma migrate dev |
+| prisma studio      | npx prisma studio      |
++--------------------+------------------------+
+
+
+Run:
+
++----------+----------------+-------------------+---------------------+
+| TERMINAL | KIND           | COMMAND           | PATH                |
++----------+----------------+-------------------+---------------------+
+| 1        | docker         | docker-compose up | docker-compose root |
+| 2        | server         | npm run dev       | project root        |
+| 3        | prisma         | npx prisma studio | project root        |
+| 4        | supertest-jest | npm run tet:dev   | project root        |
++----------+----------------+-------------------+---------------------+

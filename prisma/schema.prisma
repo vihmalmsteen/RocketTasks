@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Tabela de usuários
+enum UserRole {
+  admin
+  member
+}
+
+model Users {
+  id        String    @id @default(uuid())
+  name      String
+  email     String
+  password  String
+  role      UserRole  @default(member)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  taskHistPK    taskHistory[]
+  taskPK        Tasks[]
+  teamMembersPK TeamMembers[]
+
+  @@map("users")
+}
+
+// Tabela de times
+model Teams {
+  id          String    @id @default(uuid())
+  name        String
+  description String
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime? @updatedAt @map("updated_at")
+
+  TaskPK Tasks[]
+  TeamPK TeamMembers[]
+
+  @@map("teams")
+}
+
+// Tabela de membros dos times
+model TeamMembers {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  teamId    String   @map("team_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  teamFK  Teams @relation(fields: [teamId], references: [id])
+  usersFK Users @relation(fields: [userId], references: [id])
+
+  @@map("team_members")
+}
+
+// Tabela de tarefas
+enum TaskStatus {
+  pending
+  in_progress
+  completed
+}
+
+enum taskPriority {
+  high
+  medium
+  low
+}
+
+model Tasks {
+  id          String       @id @default(uuid())
+  title       String
+  description String
+  status      TaskStatus   @default(pending)
+  priority    taskPriority @default(low)
+  assignedTo  String       @map("assigned_to")
+  teamId      String       @map("team_id")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime?    @updatedAt @map("updated_at")
+
+  assignedFK Users         @relation(fields: [assignedTo], references: [id])
+  teamFK     Teams         @relation(fields: [teamId], references: [id])
+  taskHistPK taskHistory[]
+
+  @@map("tasks")
+}
+
+// Tabela de historico das tarefas
+model taskHistory {
+  id        String     @id @default(uuid())
+  changedBy String     @map("changed_by")
+  taskId    String     @map("task_id")
+  oldStatus TaskStatus @default(pending) @map("old_status")
+  newStatus TaskStatus @default(pending) @map("new_status")
+  updatedAt DateTime?  @updatedAt @map("updated_at")
+
+  taskFK Tasks @relation(fields: [taskId], references: [id])
+  userFK Users @relation(fields: [changedBy], references: [id])
+
+  @@map("task_history")
+}
