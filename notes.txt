@@ -19,3 +19,30 @@ Run:
 | 3        | prisma         | npx prisma studio | project root        |
 | 4        | supertest-jest | npm run tet:dev   | project root        |
 +----------+----------------+-------------------+---------------------+
+
+
+On Render:
+
+RENDER:
+	postgresql:
+		name: rockettasks-postgresql
+		database (optional): rockettasks
+		User (optional): rockettasks
+		
+		After creation:
+			Hostname: dpg-ctfs7g8gph6c73fp8el0-a
+			Port: 5432
+			Database: rockettasks
+			Username: rockettasks
+			Password: IVSLvYSLY6F6rhpXY8KXuwA97Dg2xsiV
+			Internal Database URL: postgresql://rockettasks:IVSLvYSLY6F6rhpXY8KXuwA97Dg2xsiV@dpg-ctfs7g8gph6c73fp8el0-a/rockettasks
+			External Database URL: postgresql://rockettasks:IVSLvYSLY6F6rhpXY8KXuwA97Dg2xsiV@dpg-ctfs7g8gph6c73fp8el0-a.oregon-postgres.render.com/rockettasks
+	
+	Web Service:
+		Name: rockettasks-api
+		Build command: npm install && npm run build && npx prisma migrate deploy
+		Start Command: npm run start:remote
+		Environment Variables:
+			Database URL: postgresql://rockettasks:IVSLvYSLY6F6rhpXY8KXuwA97Dg2xsiV@dpg-ctfs7g8gph6c73fp8el0-a/rockettasks
+			JWT_SECRET: rockettaskskey
+			PORT: 3333
